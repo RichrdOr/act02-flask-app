@@ -9,9 +9,8 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    url = requests.get("https://gist.githubusercontent.com/reroes/502d11c95f1f8a17d300ece914464c57/raw/872172ebb60e22e95baf8f50e2472551" \
+    r = requests.get("https://gist.githubusercontent.com/reroes/502d11c95f1f8a17d300ece914464c57/raw/872172ebb60e22e95baf8f50e2472551" \
     "f49311ff/gistfile1.txt")
-    r = requests.get(url)
     soup = BeautifulSoup(r.text,'html.parser')
 
     table = soup.find('table')
