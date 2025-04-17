@@ -9,23 +9,16 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    r = requests.get("https://gist.githubusercontent.com/reroes/502d11c95f1f8a17d300ece914464c57/raw/872172ebb60e22e95baf8f50e2472551" \
-    "f49311ff/gistfile1.txt")
-    soup = BeautifulSoup(r.text,'html.parser')
-
-    table = soup.find('table')
-
-    rows = table.find_all('tr')
-
-    datos = []
-
-    for i, row in enumerate(rows):
-        columnas = row.find_all(['th', 'td'])
-        fila = [col.text.strip() for col in columnas]
-        datos.append(fila) 
+    r = requests.get("https://gist.githubusercontent.com/reroes/502d11c95f1f8a17d300ece914464c57/raw/872172ebb60e22e95baf8f50e2472551f49311ff/gistfile1.txt")
     
-    df = pd.DataFrame(datos[1:], columns=datos[0])
-
+    content = r.text
+    
+    rows = content.splitlines()
+    
+    datos = [row.split('|') for row in rows]
+    
+    df = pd.DataFrame(datos[1:], columns=datos[0]) 
+    
     df_filtrado = df[df['Cédula'].astype(str).str.startswith(('3', '4', '5', '7'))]
 
     tabla_html = df_filtrado.to_html(classes="table table-bordered", index=False)
@@ -33,15 +26,14 @@ def home():
     return render_template_string(f"""
         <html>
         <head>
-            <title>Tabla desde BeautifulSoup</title>
+            <title>Tabla desde el texto estructurado</title>
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
         </head>
         <body class="p-4">
-            <h2>Personas con ID que empiezan en 3, 4, 5 o 7 usando BeautifulSoup</h2>
+            <h2>Personas con ID que comienza con 3, 4, 5 o 7 usando Beautifulsoup</h2>
             {tabla_html}
         </body>
         </html>
     """)
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
