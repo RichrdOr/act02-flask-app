@@ -19,7 +19,7 @@ def home():
     
     df = pd.DataFrame(datos[1:], columns=datos[0]) 
     
-    df_filtrado = df[df['Cédula'].astype(str).str.startswith(('3', '4', '5', '7'))]
+    df_filtrado = df[df['id'].astype(str).str.startswith(('3', '4', '5', '7'))]
 
     tabla_html = df_filtrado.to_html(classes="table table-bordered", index=False)
 
